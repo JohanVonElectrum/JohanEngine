@@ -46,9 +46,8 @@ public class JohanEngine extends Application {
     @Override
     public void run() {
         while (window.keepRunning()) {
-            window.update();
+            window.update(layerStack);
             layerStack.handle(eventSystem);
-            layerStack.render();
         }
     }
 

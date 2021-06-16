@@ -7,4 +7,8 @@ public class Event {
     public boolean isHandled() {
         return handled;
     }
+
+    public void setHandled() {
+        this.handled = true;
+    }
 }

@@ -2,6 +2,7 @@ package com.johanvonelectrum.engine;
 
 import com.johanvonelectrum.engine.config.AppConfig;
 import com.johanvonelectrum.engine.io.KeyboardInput;
+import com.johanvonelectrum.engine.layers.LayerStack;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.lwjgl.glfw.Callbacks;
@@ -104,21 +105,25 @@ public class Window {
         return !glfwWindowShouldClose(this.id);
     }
 
-    public void update() {
-        startFrame();
-        processFrame();
-        endFrame();
+    public void update(LayerStack layerStack) {
+        startFrame(layerStack);
+        processFrame(layerStack);
+        endFrame(layerStack);
     }
 
-    private void startFrame() {
+    private void startFrame(LayerStack layerStack) {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        
+        layerStack.begin();
     }
 
-    private void processFrame() {
-
+    private void processFrame(LayerStack layerStack) {
+        layerStack.render();
     }
 
-    private void endFrame() {
+    private void endFrame(LayerStack layerStack) {
+        layerStack.end();
+
         GLFW.glfwSwapBuffers(this.id);
         GLFW.glfwPollEvents();
     }

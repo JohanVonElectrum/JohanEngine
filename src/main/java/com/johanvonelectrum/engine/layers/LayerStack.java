@@ -24,15 +24,27 @@ public class LayerStack {
         }
     }
 
+    public void init() {
+        for (Layer layer: layers) {
+            layer.init();
+        }
+    }
+
+    public void begin() {
+        for (Layer layer: layers) {
+            layer.begin();
+        }
+    }
+
     public void render() {
         for (Layer layer: layers) {
             layer.render();
         }
     }
 
-    public void init() {
+    public void end() {
         for (Layer layer: layers) {
-            layer.init();
+            layer.end();
         }
     }
 

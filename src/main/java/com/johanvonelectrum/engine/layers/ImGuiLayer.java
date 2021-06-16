@@ -6,7 +6,6 @@ import imgui.ImGui;
 import imgui.ImGuiIO;
 import imgui.flag.ImGuiConfigFlags;
 import imgui.flag.ImGuiInputTextFlags;
-import imgui.flag.ImGuiWindowFlags;
 import imgui.gl3.ImGuiImplGl3;
 import imgui.glfw.ImGuiImplGlfw;
 import imgui.type.ImString;
@@ -50,17 +49,14 @@ public class ImGuiLayer extends Layer {
     }
 
     @Override
-    public void render() {
-        //Start new frame
-
+    public void begin() {
         implGlfw.newFrame();
         ImGui.newFrame();
+    }
 
-        //Config windows
-
-        ImGui.setNextWindowPos(0, 0);
-        ImGui.setNextWindowPos(0, 0);
-        ImGui.begin("Inspector", ImGuiWindowFlags.NoResize | ImGuiWindowFlags.NoCollapse | ImGuiWindowFlags.NoMove | ImGuiWindowFlags.NoBringToFrontOnFocus | ImGuiWindowFlags.NoTitleBar | ImGuiWindowFlags.MenuBar);
+    @Override
+    public void render() {
+        ImGui.begin("Inspector");
 
         if (ImGui.button("Close")) {
             JohanEngine.LOGGER.debug("Close button pressed...");
@@ -74,9 +70,10 @@ public class ImGuiLayer extends Layer {
         ImGui.text("description");
 
         ImGui.end();
+    }
 
-        //Draw windows
-
+    @Override
+    public void end() {
         ImGui.render();
         implGl3.renderDrawData(ImGui.getDrawData());
 
@@ -90,7 +87,7 @@ public class ImGuiLayer extends Layer {
 
     @Override
     public void onEvent(Event event) {
-
+        event.setHandled();
     }
 
     @Override
