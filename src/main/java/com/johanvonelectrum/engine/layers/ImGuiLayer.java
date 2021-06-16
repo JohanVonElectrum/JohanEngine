@@ -59,7 +59,7 @@ public class ImGuiLayer extends Layer {
     public void render() {
         ImGui.setNextWindowPos(JohanEngine.getWindow().getX(), JohanEngine.getWindow().getY());
         ImGui.setNextWindowSize(JohanEngine.getWindow().getWidth(), JohanEngine.getWindow().getHeight());
-        ImGui.begin("DockingSpace", ImGuiWindowFlags.NoCollapse | ImGuiWindowFlags.NoResize | ImGuiWindowFlags.NoMove | ImGuiWindowFlags.NoTitleBar);
+        ImGui.begin("DockingSpace", ImGuiWindowFlags.NoCollapse | ImGuiWindowFlags.NoResize | ImGuiWindowFlags.NoMove | ImGuiWindowFlags.NoTitleBar | ImGuiWindowFlags.NoBringToFrontOnFocus);
         ImGui.end();
 
         ImGui.begin("Inspector");

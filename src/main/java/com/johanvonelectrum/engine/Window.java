@@ -2,13 +2,13 @@ package com.johanvonelectrum.engine;
 
 import com.johanvonelectrum.engine.config.AppConfig;
 import com.johanvonelectrum.engine.io.KeyboardInput;
+import com.johanvonelectrum.engine.io.resources.ResourceLoader;
+import com.johanvonelectrum.engine.io.resources.Texture;
 import com.johanvonelectrum.engine.layers.LayerStack;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.lwjgl.glfw.Callbacks;
 import org.lwjgl.glfw.GLFW;
-import org.lwjgl.glfw.GLFWErrorCallback;
-import org.lwjgl.glfw.GLFWVidMode;
+import org.lwjgl.glfw.*;
 import org.lwjgl.opengl.GL;
 import org.lwjgl.system.MemoryStack;
 
@@ -60,6 +60,8 @@ public class Window {
         if (this.id == NULL)
             throw new RuntimeException("Failed to create the GLFW window");
 
+        trySetIcon();
+
         logger.debug("Setting up key callback...");
         glfwSetKeyCallback(this.id, (id, key, scancode, action, mods) -> {
             KeyboardInput.handle(this, key, scancode, action, mods);
@@ -84,6 +86,19 @@ public class Window {
         glClearColor(0.05f, 0.05f, 0.05f, 0.0f);
 
         logger.info("Window created.");
+    }
+
+    private void trySetIcon() {
+        try {
+            GLFWImage image = GLFWImage.malloc();
+            GLFWImage.Buffer buffer = GLFWImage.malloc(1);
+            Texture icon = ResourceLoader.loadResourceTexture("icon/JohanEngine");
+            image.set(icon.getWidth(), icon.getHeight(), icon.getBuffer());
+            buffer.put(0, image);
+            glfwSetWindowIcon(this.id, buffer);
+        } catch (Exception e) {
+            logger.error(e);
+        }
     }
 
     protected void tryCenter() {
