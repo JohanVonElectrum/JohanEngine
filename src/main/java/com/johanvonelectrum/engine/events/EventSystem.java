@@ -18,4 +18,8 @@ public class EventSystem {
     public boolean isEmpty() {
         return eventBus.isEmpty();
     }
+
+    public void dispose() {
+
+    }
 }

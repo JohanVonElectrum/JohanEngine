@@ -25,11 +25,11 @@ public class JohanEngine extends Application {
 
     private static void setDebugMode(boolean debug) {
         if (debug) {
-            LOGGER.info("Debug mode enabled.");
             Configurator.setRootLevel(Level.ALL);
+            LOGGER.debug("Debug mode is enabled.");
         } else {
-            LOGGER.info("Debug mode disabled.");
             Configurator.setRootLevel(Level.INFO);
+            LOGGER.warn("Debug mode is disabled.");
         }
     }
 
@@ -58,7 +58,9 @@ public class JohanEngine extends Application {
 
     @Override
     protected void dispose() {
-
+        layerStack.dispose();
+        eventSystem.dispose();
+        window.dispose();
     }
 
     public static Window getWindow() {

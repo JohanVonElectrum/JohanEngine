@@ -6,6 +6,7 @@ import imgui.ImGui;
 import imgui.ImGuiIO;
 import imgui.flag.ImGuiConfigFlags;
 import imgui.flag.ImGuiInputTextFlags;
+import imgui.flag.ImGuiWindowFlags;
 import imgui.gl3.ImGuiImplGl3;
 import imgui.glfw.ImGuiImplGlfw;
 import imgui.type.ImString;
@@ -56,6 +57,11 @@ public class ImGuiLayer extends Layer {
 
     @Override
     public void render() {
+        ImGui.setNextWindowPos(JohanEngine.getWindow().getX(), JohanEngine.getWindow().getY());
+        ImGui.setNextWindowSize(JohanEngine.getWindow().getWidth(), JohanEngine.getWindow().getHeight());
+        ImGui.begin("DockingSpace", ImGuiWindowFlags.NoCollapse | ImGuiWindowFlags.NoResize | ImGuiWindowFlags.NoMove | ImGuiWindowFlags.NoTitleBar);
+        ImGui.end();
+
         ImGui.begin("Inspector");
 
         if (ImGui.button("Close")) {

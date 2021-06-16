@@ -28,6 +28,9 @@ public class Window {
     private Logger logger;
     private AppConfig appConfig;
 
+    private int[] x = new int[1], y = new int[1];
+    private int[] width = new int[1], height = new int[1];
+
     public Window(AppConfig appConfig) {
         this.appConfig = appConfig;
         this.logger = LogManager.getLogger("Window (" + this.appConfig.getTitle() + ")");
@@ -106,6 +109,9 @@ public class Window {
     }
 
     public void update(LayerStack layerStack) {
+        glfwGetWindowPos(this.id, this.x, this.y);
+        glfwGetWindowSize(this.id, this.width, this.height);
+
         startFrame(layerStack);
         processFrame(layerStack);
         endFrame(layerStack);
@@ -113,7 +119,7 @@ public class Window {
 
     private void startFrame(LayerStack layerStack) {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-        
+
         layerStack.begin();
     }
 
@@ -128,6 +134,19 @@ public class Window {
         GLFW.glfwPollEvents();
     }
 
+    public void dispose() {
+        logger.debug("Disposing window...");
+
+        logger.trace("Freeing GLFW callbacks...");
+        Callbacks.glfwFreeCallbacks(this.id);
+        logger.trace("Destroying GLFW window...");
+        GLFW.glfwDestroyWindow(this.id);
+        logger.trace("Terminating GLFW...");
+        GLFW.glfwTerminate();
+        logger.trace("Freeing GLFW error callback...");
+        Objects.requireNonNull(glfwSetErrorCallback(null)).free();
+    }
+
     public long getId() {
         return id;
     }
@@ -140,16 +159,19 @@ public class Window {
         return appConfig;
     }
 
-    protected void dispose() {
-        logger.debug("Disposing window...");
+    public int getX() {
+        return x[0];
+    }
 
-        logger.trace("Freeing GLFW callbacks...");
-        Callbacks.glfwFreeCallbacks(this.id);
-        logger.trace("Destroying GLFW window...");
-        GLFW.glfwDestroyWindow(this.id);
-        logger.trace("Terminating GLFW...");
-        GLFW.glfwTerminate();
-        logger.trace("Freeing GLFW error callback...");
-        Objects.requireNonNull(glfwSetErrorCallback(null)).free();
+    public int getY() {
+        return y[0];
+    }
+
+    public int getWidth() {
+        return width[0];
+    }
+
+    public int getHeight() {
+        return height[0];
     }
 }
