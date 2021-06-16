@@ -30,6 +30,7 @@ public class Window {
 
     private int[] x = new int[1], y = new int[1];
     private int[] width = new int[1], height = new int[1];
+    public boolean shouldClose;
 
     public Window(AppConfig appConfig) {
         this.appConfig = appConfig;
@@ -120,7 +121,7 @@ public class Window {
     }
 
     public boolean keepRunning() {
-        return !glfwWindowShouldClose(this.id);
+        return !(glfwWindowShouldClose(this.id) || shouldClose);
     }
 
     public void update(LayerStack layerStack) {
