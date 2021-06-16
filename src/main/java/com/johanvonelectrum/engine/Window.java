@@ -1,10 +1,8 @@
 package com.johanvonelectrum.engine;
 
 import com.johanvonelectrum.engine.io.KeyboardInput;
-import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.config.Configurator;
 import org.lwjgl.glfw.GLFWErrorCallback;
 import org.lwjgl.glfw.GLFWVidMode;
 import org.lwjgl.opengl.GL;
@@ -66,7 +64,7 @@ public class Window {
         logger.info("Enabling v-sync...");
         glfwSwapInterval(1);
 
-        logger.debug("Showing the window.");
+        logger.debug("Showing the window...");
         glfwShowWindow(this.id);
 
         logger.debug("Creating the GLCapabilities instance...");
@@ -75,6 +73,8 @@ public class Window {
 
         logger.debug("Setting the clear color...");
         glClearColor(1.0f, 0.0f, 0.0f, 0.0f);
+
+        logger.info("Window created.");
     }
 
     private void tryCenter() {

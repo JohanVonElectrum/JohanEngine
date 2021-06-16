@@ -1,11 +1,15 @@
 package com.johanvonelectrum.engine;
 
 import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.config.Configurator;
 import picocli.CommandLine;
 
 @CommandLine.Command(name = "", mixinStandardHelpOptions = true, version = "", description = "")
 public class JohanEngine implements Runnable {
+
+    public static final Logger LOGGER = LogManager.getLogger("Core");
 
     @CommandLine.Option(names = { "-d", "--debug" }, description = "Enables ALL logs.")
     private boolean debug = false;
@@ -14,6 +18,7 @@ public class JohanEngine implements Runnable {
     private boolean server = false;
 
     public static void main(String[] args) {
+        LOGGER.info("Starting JohanEngine...");
         int exitCode = new CommandLine(new JohanEngine()).execute(args);
         System.exit(exitCode);
     }
@@ -24,7 +29,11 @@ public class JohanEngine implements Runnable {
 
     @Override
     public void run() {
+        if (this.debug)
+            LOGGER.info("Debug mode enabled.");
         setDebugMode(this.debug);
+        if (this.server)
+            LOGGER.info("Starting in server mode...");
 
         Window window = new Window("JohanEngine", 1600, 900);
 
