@@ -1,11 +1,9 @@
 package com.johanvonelectrum.engine;
 
 import com.johanvonelectrum.engine.config.AppConfig;
-import imgui.ImGui;
-import imgui.ImGuiIO;
-import imgui.flag.ImGuiConfigFlags;
-import imgui.flag.ImGuiInputTextFlags;
-import imgui.type.ImString;
+import com.johanvonelectrum.engine.events.EventSystem;
+import com.johanvonelectrum.engine.layers.ImGuiLayer;
+import com.johanvonelectrum.engine.layers.LayerStack;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -16,9 +14,13 @@ import picocli.CommandLine;
 public class JohanEngine extends Application {
 
     public static final Logger LOGGER = LogManager.getLogger("Core");
+    private static Window window;
 
-    public JohanEngine(AppConfig appConfig) {
-        this.appConfig = appConfig;
+    private final EventSystem eventSystem = new EventSystem();
+    private final LayerStack layerStack = new LayerStack();
+
+    protected JohanEngine(AppConfig appConfig) {
+        super(appConfig);
     }
 
     private static void setDebugMode(boolean debug) {
@@ -32,42 +34,36 @@ public class JohanEngine extends Application {
     }
 
     @Override
-    protected void initImGui(final AppConfig config) {
-        final ImGuiIO io = ImGui.getIO();
-        io.setIniFilename(null);                                // We don't want to save .ini file
-        io.addConfigFlags(ImGuiConfigFlags.NavEnableKeyboard);  // Enable Keyboard Controls
-        io.addConfigFlags(ImGuiConfigFlags.DockingEnable);      // Enable Docking
-        io.addConfigFlags(ImGuiConfigFlags.ViewportsEnable);    // Enable Multi-Viewport / Platform Windows
-        io.setConfigViewportsNoTaskBarIcon(true);
-
-//        initFonts(io);
+    protected void init() {
+        window = new Window(this.appConfig);
     }
 
     @Override
-    protected void preProcess() {
-
+    protected void preRun() {
+        layerStack.add(new ImGuiLayer("ImGuiLayer").init());
     }
 
-    ImString str = new ImString(5);
-    float[] flt = new float[1];
     @Override
-    protected void process() {
-        ImGui.text("Inspector");
-        if (ImGui.button("Close")) {
-            LOGGER.debug("Close button pressed...");
+    public void run() {
+        while (window.keepRunning()) {
+            window.update();
+            layerStack.handle(eventSystem);
+            layerStack.render();
         }
-        ImGui.sameLine();
-        ImGui.text("Info panel");
-        ImGui.inputText("name", str, ImGuiInputTextFlags.CallbackResize);
-        ImGui.text("Result: " + str.get());
-        ImGui.sliderFloat("slider", flt, 0, 1);
-        ImGui.separator();
-        ImGui.text("description");
     }
 
     @Override
-    protected void postProcess() {
+    protected void postRun() {
 
+    }
+
+    @Override
+    protected void dispose() {
+
+    }
+
+    public static Window getWindow() {
+        return window;
     }
 
     public static void main(String[] args) {

@@ -2,10 +2,6 @@ package com.johanvonelectrum.engine;
 
 import com.johanvonelectrum.engine.config.AppConfig;
 import com.johanvonelectrum.engine.io.KeyboardInput;
-import imgui.ImGui;
-import imgui.flag.ImGuiConfigFlags;
-import imgui.gl3.ImGuiImplGl3;
-import imgui.glfw.ImGuiImplGlfw;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.lwjgl.glfw.Callbacks;
@@ -23,24 +19,21 @@ import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.system.MemoryStack.stackPush;
 import static org.lwjgl.system.MemoryUtil.NULL;
 
-public abstract class Window implements Runnable {
+public class Window {
 
     public static final int[] DEFAULT_WINDOW_SIZE = new int[] { 1600, 900 };
 
     private long id;
     private Logger logger;
-    protected AppConfig appConfig;
+    private AppConfig appConfig;
 
-    private final ImGuiImplGlfw implGlfw = new ImGuiImplGlfw();
-    private final ImGuiImplGl3 implGl3 = new ImGuiImplGl3();
-
-    protected void init() {
+    public Window(AppConfig appConfig) {
+        this.appConfig = appConfig;
         this.logger = LogManager.getLogger("Window (" + this.appConfig.getTitle() + ")");
 
         logger.trace(this.appConfig);
 
         initWindow(this.appConfig);
-        initImGui();
     }
 
     protected void initWindow(AppConfig config) {
@@ -89,23 +82,6 @@ public abstract class Window implements Runnable {
         logger.info("Window created.");
     }
 
-    protected abstract void initImGui(AppConfig appConfig);
-
-    private void initImGui() {
-        logger.info("Initializing ImGui...");
-
-        logger.debug("Creating ImGui context...");
-        ImGui.createContext();
-
-        logger.debug("Initializing ImGui interface components...");
-        initImGui(this.appConfig);
-
-        logger.debug("Initializing ImGui GLFW implementation...");
-        implGlfw.init(this.id, true);
-        logger.debug("Initializing ImGui GL3 implementation...");
-        implGl3.init();
-    }
-
     protected void tryCenter() {
         logger.trace("Trying to center the window in the primary monitor...");
         try ( MemoryStack stack = stackPush() ) {
@@ -128,39 +104,21 @@ public abstract class Window implements Runnable {
         return !glfwWindowShouldClose(this.id);
     }
 
-    public void run() {
-        while (keepRunning()) {
-            startFrame();
-            preProcess();
-            process();
-            postProcess();
-            endFrame();
-        }
+    public void update() {
+        startFrame();
+        processFrame();
+        endFrame();
     }
 
-    protected void startFrame() {
+    private void startFrame() {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-        implGlfw.newFrame();
-        ImGui.newFrame();
     }
 
-    protected abstract void preProcess();
+    private void processFrame() {
 
-    protected abstract void process();
+    }
 
-    protected abstract void postProcess();
-
-    protected void endFrame() {
-        ImGui.render();
-        implGl3.renderDrawData(ImGui.getDrawData());
-
-        if (ImGui.getIO().hasConfigFlags(ImGuiConfigFlags.ViewportsEnable)) {
-            final long backupWindowPtr = GLFW.glfwGetCurrentContext();
-            ImGui.updatePlatformWindows();
-            ImGui.renderPlatformWindowsDefault();
-            GLFW.glfwMakeContextCurrent(backupWindowPtr);
-        }
-
+    private void endFrame() {
         GLFW.glfwSwapBuffers(this.id);
         GLFW.glfwPollEvents();
     }
@@ -178,22 +136,8 @@ public abstract class Window implements Runnable {
     }
 
     protected void dispose() {
-        logger.debug("Disposing GL3 implementation...");
-        implGl3.dispose();
-        logger.debug("Disposing GLFW implementation...");
-        implGlfw.dispose();
-        logger.debug("Disposing ImGui...");
-        disposeImGui();
         logger.debug("Disposing window...");
-        disposeWindow();
-    }
 
-    protected void disposeImGui() {
-        logger.trace("Destroying ImGui context...");
-        ImGui.destroyContext();
-    }
-
-    protected void disposeWindow() {
         logger.trace("Freeing GLFW callbacks...");
         Callbacks.glfwFreeCallbacks(this.id);
         logger.trace("Destroying GLFW window...");

@@ -1,6 +1,15 @@
 package com.johanvonelectrum.engine;
 
-public abstract class Application extends Window {
+import com.johanvonelectrum.engine.config.AppConfig;
+
+public abstract class Application implements Runnable {
+
+    protected final AppConfig appConfig;
+
+    protected Application(AppConfig appConfig) {
+        this.appConfig = appConfig;
+    }
+
     /**
      * Method called before window creation. Could be used to provide basic window information, like title name etc.
      */
@@ -18,6 +27,10 @@ public abstract class Application extends Window {
      */
     protected void postRun() {
     }
+
+    protected abstract void init();
+
+    protected abstract void dispose();
 
     /**
      * Entry point of any ImGui application. Use it to start the application loop.
@@ -42,4 +55,6 @@ public abstract class Application extends Window {
     private static void initialize(final Application app) {
         app.init();
     }
+
+
 }
