@@ -135,8 +135,6 @@ public class Window {
 
     private void startFrame(LayerStack layerStack) {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-        layerStack.begin();
     }
 
     private void processFrame(float deltaTime, LayerStack layerStack) {
@@ -144,8 +142,6 @@ public class Window {
     }
 
     private void endFrame(LayerStack layerStack) {
-        layerStack.end();
-
         GLFW.glfwSwapBuffers(this.id);
         GLFW.glfwPollEvents();
     }

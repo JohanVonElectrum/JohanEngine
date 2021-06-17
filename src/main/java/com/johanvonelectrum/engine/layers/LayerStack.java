@@ -35,20 +35,12 @@ public class LayerStack {
         }
     }
 
-    public void begin() {
-        for (Layer layer: layers) {
-            layer.begin();
-        }
-    }
-
     public void render(float deltaTime) {
         ListIterator<Layer> layerStack = layers.listIterator(layers.size());
-        while (layerStack.hasPrevious())
-            layerStack.previous().render(deltaTime);
-    }
-
-    public void end() {
-        for (Layer layer: layers) {
+        while (layerStack.hasPrevious()) {
+            Layer layer = layerStack.previous();
+            layer.begin();
+            layer.render(deltaTime);
             layer.end();
         }
     }

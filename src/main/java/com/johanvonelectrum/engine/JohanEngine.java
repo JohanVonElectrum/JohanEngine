@@ -83,7 +83,7 @@ public class JohanEngine extends Application {
             launch(new JohanEngine(appConfig));
             LOGGER.info("Closing as expected...");
             System.exit(0);
-        } catch (CommandLine.MissingParameterException exception) {
+        } catch (Throwable exception) {
             LOGGER.fatal(exception);
             System.exit(1);
         }
