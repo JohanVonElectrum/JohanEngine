@@ -41,10 +41,10 @@ public class LayerStack {
         }
     }
 
-    public void render() {
+    public void render(float deltaTime) {
         ListIterator<Layer> layerStack = layers.listIterator(layers.size());
         while (layerStack.hasPrevious())
-            layerStack.previous().render();
+            layerStack.previous().render(deltaTime);
     }
 
     public void end() {

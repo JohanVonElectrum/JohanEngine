@@ -124,12 +124,12 @@ public class Window {
         return !(glfwWindowShouldClose(this.id) || shouldClose);
     }
 
-    public void update(LayerStack layerStack) {
+    public void update(float deltaTime, LayerStack layerStack) {
         glfwGetWindowPos(this.id, this.x, this.y);
         glfwGetWindowSize(this.id, this.width, this.height);
 
         startFrame(layerStack);
-        processFrame(layerStack);
+        processFrame(deltaTime, layerStack);
         endFrame(layerStack);
     }
 
@@ -139,8 +139,8 @@ public class Window {
         layerStack.begin();
     }
 
-    private void processFrame(LayerStack layerStack) {
-        layerStack.render();
+    private void processFrame(float deltaTime, LayerStack layerStack) {
+        layerStack.render(deltaTime);
     }
 
     private void endFrame(LayerStack layerStack) {

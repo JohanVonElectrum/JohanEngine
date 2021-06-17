@@ -45,8 +45,13 @@ public class JohanEngine extends Application {
 
     @Override
     public void run() {
+        float deltaTime = 0;
+        long lastFrameTime = 0;
         while (window.keepRunning()) {
-            window.update(layerStack);
+            deltaTime = (System.nanoTime() - lastFrameTime) / 1000000000f;
+            lastFrameTime = System.nanoTime();
+
+            window.update(deltaTime, layerStack);
             layerStack.handle(eventSystem);
         }
     }

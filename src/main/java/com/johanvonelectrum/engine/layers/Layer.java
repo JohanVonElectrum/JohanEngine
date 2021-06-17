@@ -10,7 +10,7 @@ public abstract class Layer {
 
     public abstract Layer init();
     public abstract void begin();
-    public abstract void render();
+    public abstract void render(float deltaTime);
     public abstract void end();
     public abstract void onEvent(Event event);
     public abstract void dispose();

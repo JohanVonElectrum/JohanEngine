@@ -56,7 +56,7 @@ public class ImGuiLayer extends Layer {
     }
 
     @Override
-    public void render() {
+    public void render(float deltaTime) {
         ImGui.begin("Inspector");
 
         if (ImGui.button("Close")) {
@@ -68,7 +68,9 @@ public class ImGuiLayer extends Layer {
         ImGui.text("Result: " + str.get());
         ImGui.sliderFloat("slider", flt, 0, 1);
         ImGui.separator();
-        ImGui.text("description");
+        ImGui.text("Game metrics");
+        ImGui.text("Frame time: " + deltaTime);
+        ImGui.text("FPS: " + 1 / deltaTime);
 
         ImGui.end();
     }
