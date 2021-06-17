@@ -4,9 +4,7 @@ import com.johanvonelectrum.engine.JohanEngine;
 import com.johanvonelectrum.engine.events.Event;
 import imgui.ImGui;
 import imgui.ImGuiIO;
-import imgui.flag.ImGuiConfigFlags;
-import imgui.flag.ImGuiInputTextFlags;
-import imgui.flag.ImGuiWindowFlags;
+import imgui.flag.*;
 import imgui.gl3.ImGuiImplGl3;
 import imgui.glfw.ImGuiImplGlfw;
 import imgui.type.ImString;
@@ -53,15 +51,12 @@ public class ImGuiLayer extends Layer {
     public void begin() {
         implGlfw.newFrame();
         ImGui.newFrame();
+
+        setupDockSpace();
     }
 
     @Override
     public void render() {
-        ImGui.setNextWindowPos(JohanEngine.getWindow().getX(), JohanEngine.getWindow().getY());
-        ImGui.setNextWindowSize(JohanEngine.getWindow().getWidth(), JohanEngine.getWindow().getHeight());
-        ImGui.begin("DockingSpace", ImGuiWindowFlags.NoCollapse | ImGuiWindowFlags.NoResize | ImGuiWindowFlags.NoMove | ImGuiWindowFlags.NoTitleBar | ImGuiWindowFlags.NoBringToFrontOnFocus);
-        ImGui.end();
-
         ImGui.begin("Inspector");
 
         if (ImGui.button("Close")) {
@@ -105,5 +100,31 @@ public class ImGuiLayer extends Layer {
         logger.debug("Disposing ImGui...");
         logger.trace("Destroying ImGui context...");
         ImGui.destroyContext();
+    }
+
+    private void setupDockSpace() {
+        ImGui.setNextWindowPos(JohanEngine.getWindow().getX(), JohanEngine.getWindow().getY(), ImGuiCond.Always);
+        ImGui.setNextWindowSize(JohanEngine.getWindow().getWidth(), JohanEngine.getWindow().getHeight());
+        ImGui.pushStyleVar(ImGuiStyleVar.WindowRounding, 0.0f);
+        ImGui.pushStyleVar(ImGuiStyleVar.WindowBorderSize, 0.0f);
+        ImGui.pushStyleVar(ImGuiStyleVar.WindowPadding, 0.0f, 0.0f);
+
+        ImGui.begin("Dockspace Demo", ImGuiWindowFlags.MenuBar | ImGuiWindowFlags.NoDocking | ImGuiWindowFlags.NoTitleBar | ImGuiWindowFlags.NoCollapse | ImGuiWindowFlags.NoResize | ImGuiWindowFlags.NoMove | ImGuiWindowFlags.NoBringToFrontOnFocus | ImGuiWindowFlags.NoNavFocus);
+        ImGui.popStyleVar(3);
+
+        // Dockspace
+        ImGui.dockSpace(ImGui.getID("Dockspace"));
+
+        ImGui.beginMainMenuBar();
+
+        if (ImGui.beginMenu("File")) {
+            if (ImGui.menuItem("Close", "Alt+F4"))
+                JohanEngine.getWindow().shouldClose = true;
+            ImGui.endMenu();
+        }
+
+        ImGui.endMainMenuBar();
+
+        ImGui.end();
     }
 }

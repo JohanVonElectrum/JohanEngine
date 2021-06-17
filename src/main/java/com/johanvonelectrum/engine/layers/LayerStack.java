@@ -5,6 +5,7 @@ import com.johanvonelectrum.engine.events.EventSystem;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.ListIterator;
 
 public class LayerStack {
 
@@ -41,9 +42,9 @@ public class LayerStack {
     }
 
     public void render() {
-        for (Layer layer: layers) {
-            layer.render();
-        }
+        ListIterator<Layer> layerStack = layers.listIterator(layers.size());
+        while (layerStack.hasPrevious())
+            layerStack.previous().render();
     }
 
     public void end() {
